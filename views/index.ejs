@@ -10,12 +10,23 @@
   <script src="/javascripts/ipc.js"></script>
   <script>
     let broadcasts = getBroadcastData();
+    let liveChatItems = '';
     document.addEventListener("DOMContentLoaded", function(event) {
       var vueapp = new Vue({
         el: '#app',
         data: {
           broadcasts: broadcasts,
-          selectedLive: ''
+          selectedLive: '',
+          liveChat: [{test: "test"}],
+        },
+        methods: {
+          vGetLiveChat:  (liveChatId) => {
+            getLiveChat(liveChatId).then((chat) => {
+              this.liveChat = chat.data;
+              this.liveChat.splice();
+              console.log(this.liveChat);
+            });
+          }
         }
       });
     });
@@ -27,10 +38,7 @@
     <%= title %>
   </h1>
   <div id="app">
-    <p>Welcome to
-      <%= title %>
-    </p>
-    <select v-model="selectedLive">
+    <select v-model="selectedLive" @change="vGetLiveChat(selectedLive.snippet.liveChatId);">
       <template v-for="live in broadcasts">
         <option v-if="live.snippet.liveChatId" v-bind:value="live">
           {{ live.snippet.title }}
@@ -40,6 +48,9 @@
     <template v-if="selectedLive">
       {{ selectedLive.snippet.liveChatId }}
     </template>
+    <div>
+      {{ liveChat }}
+    </div>
   </div>
 </body>
 

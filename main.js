@@ -10,7 +10,7 @@ const exapp = require("./app");
 
 require("./main/store");
 const { getAuthUrl, setCredentials } = require("./main/googleauth");
-const { getAllBroadcasts, liveChat } = require("./main/youtube");
+const { getAllBroadcasts, getLiveChat } = require("./main/youtube");
 const { sendStatusToWindow } = require("./common/common");
 
 let mainWindow = null;
@@ -52,8 +52,18 @@ app.on("ready", () => {
   });
 });
 
+/**
+ * ipcMain関連
+ * @type {[type]}
+ */
+
 ipcMain.on("getBroadcastData", async event => {
   const response = await getAllBroadcasts();
+  event.returnValue = response;
+});
+
+ipcMain.on("getLiveChat", async (event, liveChatId) => {
+  const response = await getLiveChat(liveChatId);
   event.returnValue = response;
 });
 

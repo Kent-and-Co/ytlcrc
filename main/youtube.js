@@ -56,13 +56,16 @@ const getAllBroadcasts = () =>
     return all;
   });
 
-const liveChat = async liveChatId => {
-  const test2 = await youtube.liveChatMessages.list({
-    part: "snippet, authorDetails",
-    liveChatId
-  });
-
-  sendStatusToWindow(test2.data.items);
+const getLiveChat = async liveChatId => {
+  const response = await youtube.liveChatMessages
+    .list({
+      part: "snippet, authorDetails",
+      liveChatId
+    })
+    .then(res => {
+      return res;
+    });
+  return response;
 };
 
-module.exports = { getAllBroadcasts, liveChat };
+module.exports = { getAllBroadcasts, getLiveChat };
