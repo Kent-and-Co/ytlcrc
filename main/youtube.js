@@ -52,7 +52,7 @@ const getActiveBroadcasts = () =>
 
 const getAllBroadcasts = () =>
   Promise.all([getUpcomingBroadcasts(), getActiveBroadcasts()]).then(res => {
-    const all = Object.assign(res[0], res[1]);
+    const all = res[0].data.items.concat(res[1].data.items);
     return all;
   });
 

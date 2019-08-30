@@ -1,11 +1,46 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css'>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="/javascripts/ipc.js"></script>
+  <script>
+    let broadcasts = getBroadcastData();
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var vueapp = new Vue({
+        el: '#app',
+        data: {
+          broadcasts: broadcasts,
+          selectedLive: ''
+        }
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <h1>
+    <%= title %>
+  </h1>
+  <div id="app">
+    <p>Welcome to
+      <%= title %>
+    </p>
+    <select v-model="selectedLive">
+      <template v-for="live in broadcasts">
+        <option v-if="live.snippet.liveChatId" v-bind:value="live">
+          {{ live.snippet.title }}
+        </option>
+      </template>
+    </select>
+    <template v-if="selectedLive">
+      {{ selectedLive.snippet.liveChatId }}
+    </template>
+  </div>
+</body>
+
 </html>

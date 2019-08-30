@@ -9,8 +9,8 @@ const http = require("http");
 const exapp = require("./app");
 
 require("./main/store");
-require("./main/youtube");
 const { getAuthUrl, setCredentials } = require("./main/googleauth");
+const { getAllBroadcasts, liveChat } = require("./main/youtube");
 const { sendStatusToWindow } = require("./common/common");
 
 let mainWindow = null;
@@ -36,7 +36,7 @@ app.on("ready", () => {
     height,
     x,
     y,
-    webPreferences: { nodeIntegration: false }
+    webPreferences: { nodeIntegration: true }
   });
 
   ["resize", "move"].forEach(ev => {
@@ -52,8 +52,9 @@ app.on("ready", () => {
   });
 });
 
-ipcMain.on("token", token => {
-  sendStatusToWindow(token);
+ipcMain.on("getBroadcastData", async event => {
+  const response = await getAllBroadcasts();
+  event.returnValue = response;
 });
 
 /**

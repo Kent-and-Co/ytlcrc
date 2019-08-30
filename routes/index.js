@@ -1,17 +1,17 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
 
-const { getAccessToken } = require('../main/googleauth');
+const { getAccessToken } = require("../main/googleauth");
 
 /* GET home page. */
-router.get('/', (req, res, next) => {
-  res.render('index', { title: 'Express' });
+router.get("/", (req, res, next) => {
+  res.render("index", { title: "YTLCRC 管理画面" });
 });
 
-router.get('/auth', (req, res, next) => {
+router.get("/auth", (req, res, next) => {
   getAccessToken(req.query.code);
-  res.render('index', { title: 'auth' });
+  res.redirect("/");
 });
 
 module.exports = router;
