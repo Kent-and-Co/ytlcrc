@@ -8,8 +8,9 @@ const youtube = google.youtube({
   auth: oauth2Client
 });
 
-const getUpcomingBroadcasts = () =>
-  new Promise((resolve, reject) => {
+const getUpcomingBroadcasts = () => {
+  sendStatusToWindow("youtube/getUpcomingBroadcasts");
+  return new Promise((resolve, reject) => {
     if (global.store.get("credentials")) {
       setCredentials(global.store.get("credentials"));
     } else {
@@ -28,9 +29,11 @@ const getUpcomingBroadcasts = () =>
         reject(err);
       });
   });
+};
 
-const getActiveBroadcasts = () =>
-  new Promise((resolve, reject) => {
+const getActiveBroadcasts = () => {
+  sendStatusToWindow("youtube/getActiveBroadcasts");
+  return new Promise((resolve, reject) => {
     if (global.store.get("credentials")) {
       setCredentials(global.store.get("credentials"));
     } else {
@@ -49,14 +52,20 @@ const getActiveBroadcasts = () =>
         reject(err);
       });
   });
-
-const getAllBroadcasts = () =>
-  Promise.all([getUpcomingBroadcasts(), getActiveBroadcasts()]).then(res => {
-    const all = res[0].data.items.concat(res[1].data.items);
-    return all;
-  });
+};
+const getAllBroadcasts = () => {
+  sendStatusToWindow("youtube/getAllBroadcasts");
+  return Promise.all([getUpcomingBroadcasts(), getActiveBroadcasts()]).then(
+    res => {
+      const all = res[0].data.items.concat(res[1].data.items);
+      return all;
+    }
+  );
+};
 
 const getLiveChat = async liveChatId => {
+  sendStatusToWindow("youtube/getLiveChat");
+
   const response = await youtube.liveChatMessages
     .list({
       part: "snippet, authorDetails",

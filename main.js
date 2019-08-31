@@ -9,7 +9,11 @@ const http = require("http");
 const exapp = require("./app");
 
 require("./main/store");
-const { getAuthUrl, setCredentials } = require("./main/googleauth");
+const {
+  getAuthUrl,
+  setCredentials,
+  getAuthStatus
+} = require("./main/googleauth");
 const { getAllBroadcasts, getLiveChat } = require("./main/youtube");
 const { sendStatusToWindow } = require("./common/common");
 
@@ -56,6 +60,11 @@ app.on("ready", () => {
  * ipcMain関連
  * @type {[type]}
  */
+
+ipcMain.on("getAuthStatus", event => {
+  const response = getAuthStatus();
+  event.returnValue = response;
+});
 
 ipcMain.on("getBroadcastData", async event => {
   const response = await getAllBroadcasts();
