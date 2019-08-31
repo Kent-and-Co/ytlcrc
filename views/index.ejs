@@ -7,6 +7,8 @@
   </title>
   <link rel='stylesheet' href='/stylesheets/style.css'>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/ja.js"></script>
   <script src="/javascripts/ipc.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function(event) {
@@ -37,6 +39,11 @@
           this.status = stat;
           this.vUpdateBroadcasts();
           this.$nextTick();
+        },
+        filters: {
+          moment: function (date) {
+            return moment(date).format('YYYY/MM/DD HH:mm:ss');
+          }
         }
       });
     });
@@ -59,8 +66,10 @@
       <template v-if="selectedLive">
         <p>{{ selectedLive.snippet.liveChatId }}</p>
       </template>
-      <div>
-        {{ liveChat }}
+      <div v-for="item in liveChat.items">
+        <div><img v-bind:src="item.authorDetails.profileImageUrl">{{ item.authorDetails.displayName }}</div>
+        <div>{{ item.snippet.displayMessage }}</div>
+        <div>{{ item.snippet.publishedAt | moment }}</div>
       </div>
     </template>
     <template v-else>
