@@ -58,7 +58,7 @@
     <template v-if="status">
       <select v-model="selectedLive" @change="vGetLiveChat(selectedLive.snippet.liveChatId);">
         <template v-for="live in broadcasts">
-          <option v-if="live.snippet.liveChatId" v-bind:value="live">
+          <option v-if="live.snippet.liveChatId" :value="live">
             {{ live.snippet.title }}
           </option>
         </template>
@@ -66,10 +66,13 @@
       <template v-if="selectedLive">
         <p>{{ selectedLive.snippet.liveChatId }}</p>
       </template>
-      <div v-for="item in liveChat.items">
-        <div><img v-bind:src="item.authorDetails.profileImageUrl">{{ item.authorDetails.displayName }}</div>
-        <div>{{ item.snippet.displayMessage }}</div>
-        <div>{{ item.snippet.publishedAt | moment }}</div>
+      <div class="chatItems">
+        <div v-for="item in liveChat.items" class="chatItem">
+          <div class="chatItem_image"><img v-bind:src="item.authorDetails.profileImageUrl"></div>
+          <div class="chatItem_name">{{ item.authorDetails.displayName }}</div>
+          <div class="chatItem_text">{{ item.snippet.displayMessage }}</div>
+          <div class="chatItem_time">{{ item.snippet.publishedAt | moment }}</div>
+        </div>
       </div>
     </template>
     <template v-else>

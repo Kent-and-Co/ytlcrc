@@ -1,8 +1,22 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
+  font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
+  padding: 50px; }
 
 a {
-  color: #00B7FF;
-}
+  color: "#00b7ff"; }
+
+.chatItems .chatItem {
+  border: solid 1px #ddd;
+  display: flex; }
+  .chatItems .chatItem:nth-child(n + 2) {
+    border-top: none; }
+  .chatItems .chatItem div {
+    padding: 5px; }
+  .chatItems .chatItem .chatItem_image img {
+    max-height: 30px; }
+  .chatItems .chatItem .chatItem_name {
+    max-width: 150px; }
+  .chatItems .chatItem .chatItem_text {
+    flex: 1; }
+  .chatItems .chatItem .chatItem_time {
+    color: #999; }

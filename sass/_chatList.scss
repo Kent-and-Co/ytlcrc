@@ -1,0 +1,36 @@
+// main: style.scss
+
+$gray: #999;
+
+.chatItems {
+  .chatItem {
+    border: solid 1px #ddd;
+    display: flex;
+
+    &:nth-child(n + 2) {
+      border-top: none;
+    }
+
+    div {
+      padding: 5px;
+    }
+
+    .chatItem_image {
+      img {
+        max-height: 30px;
+      }
+    }
+
+    .chatItem_name {
+      max-width: 150px;
+    }
+
+    .chatItem_text {
+      flex: 1;
+    }
+
+    .chatItem_time {
+      color: $gray;
+    }
+  }
+}
