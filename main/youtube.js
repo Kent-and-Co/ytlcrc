@@ -63,13 +63,17 @@ const getAllBroadcasts = () => {
   );
 };
 
-const getLiveChat = async liveChatId => {
+const getLiveChat = async args => {
   sendStatusToWindow("youtube/getLiveChat");
+
+  const { liveChatId } = args;
+  const { nextPageToken } = args;
 
   const response = await youtube.liveChatMessages
     .list({
       part: "snippet, authorDetails",
-      liveChatId
+      liveChatId,
+      pageToken: nextPageToken
     })
     .then(res => {
       return res;

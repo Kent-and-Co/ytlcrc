@@ -71,8 +71,8 @@ ipcMain.on("getBroadcastData", async event => {
   event.returnValue = response;
 });
 
-ipcMain.on("getLiveChat", async (event, liveChatId) => {
-  const response = await getLiveChat(liveChatId);
+ipcMain.on("getLiveChat", async (event, args) => {
+  const response = await getLiveChat(args);
   event.returnValue = response;
 });
 

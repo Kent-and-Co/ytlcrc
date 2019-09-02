@@ -17,7 +17,12 @@
     "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
     "import/no-extraneous-dependencies": [
       "error",
-      { "devDependencies": true, "optionalDependencies": false, "peerDependencies": false }
-    ]
+      {
+        "devDependencies": true,
+        "optionalDependencies": false,
+        "peerDependencies": false
+      }
+    ],
+    "no-param-reassign": ["error", { "props": false }]
   }
 }

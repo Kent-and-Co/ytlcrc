@@ -19,11 +19,27 @@
           selectedLive: '',
           broadcasts: {},
           liveChat: {},
+          autoReload: true,
+          nextPageToken: '',
+          pollingIntervalMillis: 3000,
+          intervalId: undefined
         },
         methods: {
-          vGetLiveChat: function (liveChatId) {
-            getLiveChat(liveChatId).then((chat) => {
-              this.liveChat = chat.data;
+          vGetLiveChat: function (liveChatId, nextPageToken = '') {
+            const args = {liveChatId, nextPageToken};
+            getLiveChat(args).then((chat) => {
+              if (Object.keys(this.liveChat).length != 0 && parseInt(chat.data.items.length) > 0) {
+                this.liveChat.items = this.liveChat.items.concat(chat.data.items);
+                this.liveChat.nextPageToken = chat.data.nextPageToken;
+                this.liveChat.pollingIntervalMillis = chat.data.pollingIntervalMillis;
+              } else if (Object.keys(this.liveChat).length == 0) {
+                this.liveChat = chat.data;
+              }
+              this.nextPageToken = chat.data.nextPageToken;
+              if (this.pollingIntervalMillis != chat.data.pollingIntervalMillis) {
+                this.pollingIntervalMillis = chat.data.pollingIntervalMillis;
+              }
+              this.vScrollDown();
             });
           },
           vReload: function () {
@@ -32,6 +48,29 @@
           vUpdateBroadcasts: async function () {
             const test = await getBroadcastData();
             this.broadcasts = test;
+          },
+          vSetInterval: function () {
+            let vm = this;
+            this.intervalId = setInterval(
+              function () {
+                vm.vGetLiveChat(vm.selectedLive.snippet.liveChatId, vm.nextPageToken);
+              }, this.pollingIntervalMillis
+            );
+          },
+          vRemoveInterval: function () {
+            clearInterval(this.intervalId);
+          },
+          vChangeReload: function () {
+            if (this.autoReload && this.selectedLive) {
+              this.vSetInterval();
+            } else {
+              this.vRemoveInterval();
+            }
+          },
+          vScrollDown () {
+            const target = this.$el.querySelector('.chatItems');
+            const height = target.scrollHeight - target.offsetHeight;
+            target.scrollTop = target.scrollHeight;
           }
         },
         created: function () {
@@ -43,6 +82,20 @@
         filters: {
           moment: function (date) {
             return moment(date).format('YYYY/MM/DD HH:mm:ss');
+          }
+        },
+        watch: {
+          autoReload: function () {
+            this.vChangeReload();
+          },
+          selectedLive: function () {
+            this.vChangeReload();
+          },
+          'liveChat.items': function () {
+            this.vScrollDown();
+          },
+          pollingIntervalMillis: function () {
+            this.vSetInterval();
           }
         }
       });
@@ -65,15 +118,18 @@
       </select>
       <template v-if="selectedLive">
         <p>{{ selectedLive.snippet.liveChatId }}</p>
-      </template>
-      <div class="chatItems">
-        <div v-for="item in liveChat.items" class="chatItem">
-          <div class="chatItem_image"><img v-bind:src="item.authorDetails.profileImageUrl"></div>
-          <div class="chatItem_name">{{ item.authorDetails.displayName }}</div>
-          <div class="chatItem_text">{{ item.snippet.displayMessage }}</div>
-          <div class="chatItem_time">{{ item.snippet.publishedAt | moment }}</div>
+        <label for="autoReload">ライブチャットを自動更新</label>
+        <input type="checkbox" id="autoReload" v-model="autoReload">
+        <div class="chatItems">
+          <div v-for="item in liveChat.items" class="chatItem">
+            <div class="chatItem_image"><img :src="item.authorDetails.profileImageUrl"></div>
+            <div class="chatItem_name">{{ item.authorDetails.displayName }}</div>
+            <div class="chatItem_text">{{ item.snippet.displayMessage }}</div>
+            <div class="chatItem_time">{{ item.snippet.publishedAt | moment }}</div>
+          </div>
         </div>
-      </div>
+        <button @click="vGetLiveChat(selectedLive.snippet.liveChatId, nextPageToken)">チャットの手動更新</button>
+      </template>
     </template>
     <template v-else>
       <p>Googleアカウントでのログインが必要です。開いたブラウザからログインとアクセスの許可を行って下さい。</p>
